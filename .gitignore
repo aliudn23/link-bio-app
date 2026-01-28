@@ -39,3 +39,14 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# Database files
+*.db
+*.db-journal
+prisma/dev.db*
+
+# Environment variables
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local

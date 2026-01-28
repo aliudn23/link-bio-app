@@ -1,0 +1,45 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model User {
+  id        String   @id @default(uuid())
+  email     String   @unique
+  password  String
+  name      String
+  bio       String?
+  avatar    String?
+  darkMode  Boolean  @default(false)
+  themeColor String  @default("#3B82F6")
+  links     Link[]
+  createdAt DateTime @default(now())
+}
+
+model Link {
+  id        String   @id @default(uuid())
+  title     String
+  url       String
+  active    Boolean  @default(true)
+  order     Int      @default(0)
+  clicks    Int      @default(0)
+  userId    String
+  user      User     @relation(fields: [userId], references: [id])
+  clickEvents ClickEvent[]
+  createdAt DateTime @default(now())
+}
+
+model ClickEvent {
+  id        String   @id @default(uuid())
+  linkId    String
+  link      Link     @relation(fields: [linkId], references: [id], onDelete: Cascade)
+  timestamp DateTime @default(now())
+  userAgent String?
+  referer   String?
+}
