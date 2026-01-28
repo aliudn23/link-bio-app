@@ -59,7 +59,7 @@ export async function POST(req: NextRequest) {
     // Set HTTP-only cookie for middleware authentication
     response.cookies.set('token', token, {
       httpOnly: true,
-      secure: process.env.NODE_ENV === 'production',
+      secure: true, // Always true since Vercel uses HTTPS
       sameSite: 'lax',
       maxAge: 60 * 60 * 24 * 7, // 7 days
       path: '/'

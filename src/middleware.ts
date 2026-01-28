@@ -9,6 +9,10 @@ const authPaths = ['/login', '/register', '/'];
 
 export function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
+  
+  // Debug: Log all cookies
+  console.log('Middleware - All cookies:', request.cookies.getAll());
+  
   const token = request.cookies.get('token')?.value || 
                 request.headers.get('authorization')?.replace('Bearer ', '');
 

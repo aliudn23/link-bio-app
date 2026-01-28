@@ -8,7 +8,7 @@ export async function POST(req: NextRequest) {
   // Clear the token cookie
   response.cookies.set('token', '', {
     httpOnly: true,
-    secure: process.env.NODE_ENV === 'production',
+    secure: true, // Always true since Vercel uses HTTPS
     sameSite: 'lax',
     maxAge: 0,
     path: '/'

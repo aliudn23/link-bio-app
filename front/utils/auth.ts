@@ -21,6 +21,7 @@ export const auth = {
       headers: {
         'Content-Type': 'application/json',
       },
+      credentials: 'include', // Important to receive cookies
       body: JSON.stringify({ email, password, name }),
     });
 
@@ -39,6 +40,7 @@ export const auth = {
       headers: {
         'Content-Type': 'application/json',
       },
+      credentials: 'include', // Important to receive cookies
       body: JSON.stringify({ email, password }),
     });
 
@@ -57,6 +59,7 @@ export const auth = {
       headers: {
         Authorization: `Bearer ${token}`,
       },
+      credentials: 'include', // Important to send cookies
     });
 
     const data = await response.json();
