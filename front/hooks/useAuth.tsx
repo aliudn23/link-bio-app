@@ -18,6 +18,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [mounted, setMounted] = useState(false);
+  const [skipAuthCheck, setSkipAuthCheck] = useState(false);
 
   useEffect(() => {
     setMounted(true);
@@ -28,39 +29,50 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       if (auth.isAuthenticated()) {
         const { user } = await auth.getProfile();
         setUser(user);
+      } else {
+        setUser(null);
       }
     } catch (error) {
       console.error('Auth check failed:', error);
       auth.removeToken();
+      setUser(null);
     } finally {
       setIsLoading(false);
     }
   };
 
   useEffect(() => {
-    if (mounted) {
+    if (mounted && !skipAuthCheck) {
       checkAuthStatus();
+    } else if (mounted && skipAuthCheck) {
+      setIsLoading(false);
     }
-  }, [mounted]);
+  }, [mounted, skipAuthCheck]);
 
   const login = async (email: string, password: string) => {
+    setIsLoading(true);
     try {
       const response = await auth.login(email, password);
       auth.setToken(response.token);
       setUser(response.user);
+      setSkipAuthCheck(true);
       setIsLoading(false);
     } catch (error) {
+      setIsLoading(false);
       throw error;
     }
   };
 
   const register = async (email: string, password: string, name: string) => {
+    setIsLoading(true);
     try {
       const response = await auth.register(email, password, name);
       auth.setToken(response.token);
       setUser(response.user);
+      setSkipAuthCheck(true);
       setIsLoading(false);
     } catch (error) {
+      setIsLoading(false);
       throw error;
     }
   };
@@ -68,6 +80,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const logout = () => {
     auth.removeToken();
     setUser(null);
+    setSkipAuthCheck(false);
   };
 
   const value = {

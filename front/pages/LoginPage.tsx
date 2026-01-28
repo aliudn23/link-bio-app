@@ -32,12 +32,9 @@ export default function LoginPage() {
 
     try {
       await login(data.email, data.password);
-      // Small delay to ensure auth state is fully updated
-      await new Promise(resolve => setTimeout(resolve, 100));
-      router.push('/dashboard');
+      router.replace('/dashboard');
     } catch (err: any) {
       setError(err.message || 'Login failed');
-    } finally {
       setIsLoading(false);
     }
   };
