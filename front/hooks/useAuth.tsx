@@ -56,7 +56,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         setUser(null);
         localStorage.removeItem('user');
       } finally {
-        console.log('Auth check completed');
         setIsLoading(false);
       }
     };

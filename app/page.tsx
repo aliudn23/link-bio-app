@@ -12,10 +12,7 @@ export default function Home() {
   const router = useRouter();
 
   useEffect(() => {
-    console.log('Home page useEffect triggered');
-    console.log('isLoading:', isLoading, 'isAuthenticated:', isAuthenticated);
     if (!isLoading && isAuthenticated) {
-      console.log('User is authenticated, redirecting to dashboard');
       router.push('/dashboard');
     }
   }, [isLoading, isAuthenticated, router]);

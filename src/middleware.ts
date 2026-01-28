@@ -18,18 +18,16 @@ export function middleware(request: NextRequest) {
   // Check if the current path is an auth path
   const isAuthPath = authPaths.some(path => pathname.startsWith(path));
 
-  // If it's a protected path and no token, redirect to login
-  console.log('Middleware check:', { pathname, isProtectedPath, isAuthPath, token });
-  if (isProtectedPath && !token) {
-    console.log('No token found, redirecting to login');
-    const loginUrl = new URL('/login', request.url);
-    loginUrl.searchParams.set('callbackUrl', pathname);
-    // return NextResponse.redirect(loginUrl);
-  }
-
   // If it's an auth path and user has token, redirect to dashboard
   if (isAuthPath && token) {
     return NextResponse.redirect(new URL('/dashboard', request.url));
+  }
+
+  // If it's a protected path and no token, redirect to login
+  if (isProtectedPath && !token) {
+    const loginUrl = new URL('/login', request.url);
+    loginUrl.searchParams.set('callbackUrl', pathname);
+    return NextResponse.redirect(loginUrl);
   }
 
   return NextResponse.next();
