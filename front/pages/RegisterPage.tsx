@@ -30,6 +30,8 @@ export default function RegisterPage() {
   } = useForm<RegisterFormData>();
 
   useEffect(() => {
+    console.log('RegisterPage useEffect triggered');
+    console.log('isLoading:', isLoading, 'isAuthenticated:', isAuthenticated);
     if (!isLoading && isAuthenticated) {
       router.push('/dashboard');
     }

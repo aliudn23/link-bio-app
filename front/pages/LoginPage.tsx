@@ -27,6 +27,8 @@ export default function LoginPage() {
   } = useForm<LoginFormData>();
 
   useEffect(() => {
+    console.log('LoginPage useEffect triggered');
+    console.log('isLoading:', isLoading, 'isAuthenticated:', isAuthenticated);
     if (!isLoading && isAuthenticated) {
       router.push('/dashboard');
     }
