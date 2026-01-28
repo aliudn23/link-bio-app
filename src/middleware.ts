@@ -24,7 +24,7 @@ export function middleware(request: NextRequest) {
     console.log('No token found, redirecting to login');
     const loginUrl = new URL('/login', request.url);
     loginUrl.searchParams.set('callbackUrl', pathname);
-    return NextResponse.redirect(loginUrl);
+    // return NextResponse.redirect(loginUrl);
   }
 
   // If it's an auth path and user has token, redirect to dashboard

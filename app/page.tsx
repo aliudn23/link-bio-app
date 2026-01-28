@@ -17,7 +17,6 @@ export default function Home() {
     if (!isLoading && isAuthenticated) {
       console.log('User is authenticated, redirecting to dashboard');
       router.push('/dashboard');
-      router.refresh();
     }
   }, [isLoading, isAuthenticated, router]);
 
