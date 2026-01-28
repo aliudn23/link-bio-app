@@ -27,12 +27,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       try {
         const token = auth.getToken();
 
-        console.log('Auth token on mount:', token);
         if (token) {
           // Try to get cached user first
           const savedUser = localStorage.getItem('user');
 
-          console.log('Saved user from localStorage:', savedUser);
           if (savedUser) {
             try {
               const cachedUser = JSON.parse(savedUser);

@@ -36,6 +36,7 @@ export const auth = {
   async login(email: string, password: string): Promise<AuthResponse> {
     const response = await fetch(`${API_BASE}/auth/login`, {
       method: 'POST',
+      cache: "no-store",
       headers: {
         'Content-Type': 'application/json',
       },

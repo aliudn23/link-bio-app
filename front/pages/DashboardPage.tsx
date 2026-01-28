@@ -158,9 +158,8 @@ export default function DashboardPage() {
   );
 
   useEffect(() => {
-    console.log('DashboardPage - isLoading:', isLoading, 'isAuthenticated:', isAuthenticated);
     if (!isLoading && !isAuthenticated) {
-      router.push('/login');
+      // router.push('/login');
     }
   }, [isLoading, isAuthenticated, router]);
 

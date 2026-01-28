@@ -13,7 +13,7 @@ export default function Home() {
 
   useEffect(() => {
     if (!isLoading && isAuthenticated) {
-      router.push('/dashboard');
+      router.push('/register');
     }
   }, [isLoading, isAuthenticated, router]);
 
