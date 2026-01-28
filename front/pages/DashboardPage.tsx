@@ -158,8 +158,11 @@ export default function DashboardPage() {
   );
 
   useEffect(() => {
+    console.log('DashboardPage useEffect triggered');
+    console.log('isLoading:', isLoading, 'isAuthenticated:', isAuthenticated);
     if (!isLoading && !isAuthenticated) {
-      // router.push('/login');
+      console.log('User is not authenticated, redirecting to login');
+      router.push('/login');
     }
   }, [isLoading, isAuthenticated, router]);
 
