@@ -183,7 +183,8 @@ export default function DashboardPage() {
       const response = await fetch('/api/links', {
         headers: {
           'Authorization': `Bearer ${token}`
-        }
+        },
+        credentials: 'include'
       });
 
       if (response.ok) {
@@ -203,7 +204,8 @@ export default function DashboardPage() {
       const response = await fetch('/api/analytics', {
         headers: {
           'Authorization': `Bearer ${token}`
-        }
+        },
+        credentials: 'include'
       });
 
       if (response.ok) {
@@ -238,6 +240,7 @@ export default function DashboardPage() {
             'Content-Type': 'application/json',
             'Authorization': `Bearer ${token}`
           },
+          credentials: 'include',
           body: JSON.stringify({ links: reorderedLinks })
         });
       } catch (error) {
@@ -265,6 +268,7 @@ export default function DashboardPage() {
           'Content-Type': 'application/json',
           'Authorization': `Bearer ${token}`
         },
+        credentials: 'include',
         body: JSON.stringify(newLink)
       });
 
@@ -298,6 +302,7 @@ export default function DashboardPage() {
           'Content-Type': 'application/json',
           'Authorization': `Bearer ${token}`
         },
+        credentials: 'include',
         body: JSON.stringify({
           title: editingLink.title,
           url: editingLink.url
@@ -326,7 +331,8 @@ export default function DashboardPage() {
         method: 'DELETE',
         headers: {
           'Authorization': `Bearer ${token}`
-        }
+        },
+        credentials: 'include'
       });
 
       if (response.ok) {
@@ -350,6 +356,7 @@ export default function DashboardPage() {
           'Content-Type': 'application/json',
           'Authorization': `Bearer ${token}`
         },
+        credentials: 'include',
         body: JSON.stringify({ active: !link.active })
       });
 
@@ -374,12 +381,19 @@ export default function DashboardPage() {
           'Content-Type': 'application/json',
           'Authorization': `Bearer ${token}`
         },
+        credentials: 'include',
         body: JSON.stringify(profile)
       });
 
       if (response.ok) {
+        const data = await response.json();
+        // Update user in localStorage so useAuth picks it up
+        if (data.user) {
+          localStorage.setItem('user', JSON.stringify(data.user));
+        }
         setSuccess('Profile updated successfully!');
         setShowEditProfile(false);
+        // Refresh the page to reflect changes
         window.location.reload();
       } else {
         const data = await response.json();
