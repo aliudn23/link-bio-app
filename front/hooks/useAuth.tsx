@@ -26,9 +26,13 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     const checkAuth = async () => {
       try {
         const token = auth.getToken();
+
+        console.log('Auth token on mount:', token);
         if (token) {
           // Try to get cached user first
           const savedUser = localStorage.getItem('user');
+
+          console.log('Saved user from localStorage:', savedUser);
           if (savedUser) {
             try {
               const cachedUser = JSON.parse(savedUser);
@@ -54,6 +58,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         setUser(null);
         localStorage.removeItem('user');
       } finally {
+        console.log('Auth check completed');
         setIsLoading(false);
       }
     };
