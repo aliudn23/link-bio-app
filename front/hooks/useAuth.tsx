@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect, createContext, useContext, ReactNode, useRef } from 'react';
+import { useState, useEffect, createContext, useContext, ReactNode } from 'react';
 import { auth, User } from '../utils/auth';
 
 interface AuthContextType {
@@ -15,31 +15,42 @@ interface AuthContextType {
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export function AuthProvider({ children }: { children: ReactNode }) {
-  const [user, setUser] = useState<User | null>(null);
+  const [user, setUser] = useState<User | null>(() => {
+    // Initialize from localStorage if available
+    if (typeof window !== 'undefined') {
+      const savedUser = localStorage.getItem('user');
+      return savedUser ? JSON.parse(savedUser) : null;
+    }
+    return null;
+  });
   const [isLoading, setIsLoading] = useState(true);
   const [mounted, setMounted] = useState(false);
-  const authChecked = useRef(false);
 
   useEffect(() => {
     setMounted(true);
   }, []);
 
   const checkAuthStatus = async () => {
-    if (authChecked.current) return;
-    authChecked.current = true;
-    
     try {
       const token = auth.getToken();
       if (token) {
-        const { user } = await auth.getProfile();
-        setUser(user);
+        // If we already have user in state, don't fetch again
+        if (user) {
+          setIsLoading(false);
+          return;
+        }
+        const { user: fetchedUser } = await auth.getProfile();
+        setUser(fetchedUser);
+        localStorage.setItem('user', JSON.stringify(fetchedUser));
       } else {
         setUser(null);
+        localStorage.removeItem('user');
       }
     } catch (error) {
       console.error('Auth check failed:', error);
       auth.removeToken();
       setUser(null);
+      localStorage.removeItem('user');
     } finally {
       setIsLoading(false);
     }
@@ -56,6 +67,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       const response = await auth.login(email, password);
       auth.setToken(response.token);
       setUser(response.user);
+      localStorage.setItem('user', JSON.stringify(response.user));
     } catch (error) {
       throw error;
     }
@@ -66,6 +78,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       const response = await auth.register(email, password, name);
       auth.setToken(response.token);
       setUser(response.user);
+      localStorage.setItem('user', JSON.stringify(response.user));
     } catch (error) {
       throw error;
     }
@@ -74,6 +87,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const logout = () => {
     auth.removeToken();
     setUser(null);
+    localStorage.removeItem('user');
   };
 
   const value = {
