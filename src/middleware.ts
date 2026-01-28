@@ -5,7 +5,7 @@ import type { NextRequest } from 'next/server';
 const protectedPaths = ['/dashboard'];
 
 // Paths that should redirect to dashboard if user is already authenticated
-const authPaths = ['/login', '/register', '/'];
+const authPaths = ['/login', '/register'];
 
 export function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
@@ -16,8 +16,8 @@ export function middleware(request: NextRequest) {
   // Check if the current path is protected
   const isProtectedPath = protectedPaths.some(path => pathname.startsWith(path));
   
-  // Check if the current path is an auth path (exact match for home, startsWith for others)
-  const isAuthPath = pathname === '/' || authPaths.slice(1).some(path => pathname.startsWith(path));
+  // Check if the current path is an auth path
+  const isAuthPath = authPaths.some(path => pathname.startsWith(path));
 
   // If it's an auth path and user has token, redirect to dashboard
   if (isAuthPath && token) {
