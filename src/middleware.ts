@@ -37,13 +37,11 @@ export function middleware(request: NextRequest) {
 export const config = {
   matcher: [
     /*
-     * Match all request paths except for the ones starting with:
-     * - api (API routes)
-     * - _next/static (static files)
-     * - _next/image (image optimization files)
-     * - favicon.ico (favicon file)
-     * - files with extensions (public files)
+     * Only match specific auth and dashboard paths
+     * This prevents middleware from blocking public profile pages
      */
-    '/((?!api|_next/static|_next/image|favicon.ico|.*\\..*).*)',
+    '/dashboard/:path*',
+    '/login',
+    '/register',
   ],
 };

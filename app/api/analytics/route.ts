@@ -5,7 +5,8 @@ import { verifyToken } from '../../../api/utils/jwt';
 // GET analytics for user's links
 export async function GET(req: NextRequest) {
   try {
-    const token = req.headers.get('authorization')?.replace('Bearer ', '');
+    const token = req.cookies.get('token')?.value || 
+                  req.headers.get('authorization')?.replace('Bearer ', '');
 
     if (!token) {
       return NextResponse.json(

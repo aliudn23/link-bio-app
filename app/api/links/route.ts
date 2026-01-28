@@ -5,7 +5,8 @@ import { verifyToken } from '../../../api/utils/jwt';
 // GET all links for the authenticated user
 export async function GET(req: NextRequest) {
   try {
-    const token = req.headers.get('authorization')?.replace('Bearer ', '');
+    const token = req.cookies.get('token')?.value || 
+                  req.headers.get('authorization')?.replace('Bearer ', '');
 
     if (!token) {
       return NextResponse.json(
@@ -40,7 +41,8 @@ export async function GET(req: NextRequest) {
 // POST create a new link
 export async function POST(req: NextRequest) {
   try {
-    const token = req.headers.get('authorization')?.replace('Bearer ', '');
+    const token = req.cookies.get('token')?.value || 
+                  req.headers.get('authorization')?.replace('Bearer ', '');
 
     if (!token) {
       return NextResponse.json(

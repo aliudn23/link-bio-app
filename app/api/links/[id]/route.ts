@@ -42,7 +42,8 @@ export async function PATCH(
 ) {
   try {
     const { id } = await params;
-    const token = req.headers.get('authorization')?.replace('Bearer ', '');
+    const token = req.cookies.get('token')?.value || 
+                  req.headers.get('authorization')?.replace('Bearer ', '');
 
     if (!token) {
       return NextResponse.json(
@@ -108,7 +109,8 @@ export async function DELETE(
 ) {
   try {
     const { id } = await params;
-    const token = req.headers.get('authorization')?.replace('Bearer ', '');
+    const token = req.cookies.get('token')?.value || 
+                  req.headers.get('authorization')?.replace('Bearer ', '');
 
     if (!token) {
       return NextResponse.json(

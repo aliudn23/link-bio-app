@@ -5,7 +5,8 @@ import { verifyToken } from '../../../../api/utils/jwt';
 // POST reorder links
 export async function POST(req: NextRequest) {
   try {
-    const token = req.headers.get('authorization')?.replace('Bearer ', '');
+    const token = req.cookies.get('token')?.value || 
+                  req.headers.get('authorization')?.replace('Bearer ', '');
 
     if (!token) {
       return NextResponse.json(
