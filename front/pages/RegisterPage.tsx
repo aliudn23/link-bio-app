@@ -37,6 +37,8 @@ export default function RegisterPage() {
 
     try {
       await registerUser(data.email, data.password, data.name);
+      // Small delay to ensure auth state is fully updated
+      await new Promise(resolve => setTimeout(resolve, 100));
       router.push('/dashboard');
     } catch (err: any) {
       setError(err.message || 'Registration failed');

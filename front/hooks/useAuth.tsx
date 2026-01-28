@@ -48,6 +48,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       const response = await auth.login(email, password);
       auth.setToken(response.token);
       setUser(response.user);
+      setIsLoading(false);
     } catch (error) {
       throw error;
     }
@@ -58,6 +59,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       const response = await auth.register(email, password, name);
       auth.setToken(response.token);
       setUser(response.user);
+      setIsLoading(false);
     } catch (error) {
       throw error;
     }
