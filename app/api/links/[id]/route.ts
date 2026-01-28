@@ -6,6 +6,17 @@ import { verifyToken } from '../../../../api/utils/jwt';
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
 
+export async function OPTIONS() {
+  return NextResponse.json({}, { status: 200, 
+    headers: {
+      'Access-Control-Allow-Origin': '*',
+      'Access-Control-Allow-Methods': 'GET,POST,PATCH,DELETE,OPTIONS',
+      'Access-Control-Allow-Headers': 'Content-Type, Authorization',
+    },
+   });
+}
+
+
 // GET single link
 export async function GET(
   req: NextRequest,
@@ -158,14 +169,4 @@ export async function DELETE(
       { status: 500 }
     );
   }
-}
-
-export async function OPTIONS() {
-  return NextResponse.json({}, { status: 200, 
-    headers: {
-      'Access-Control-Allow-Origin': '*',
-      'Access-Control-Allow-Methods': 'GET,POST,PATCH,DELETE,OPTIONS',
-      'Access-Control-Allow-Headers': 'Content-Type, Authorization',
-    },
-   });
 }

@@ -15,6 +15,10 @@ export function middleware(request: NextRequest) {
 
   // Check if the current path is protected
   const isProtectedPath = protectedPaths.some(path => pathname.startsWith(path));
+
+  if (!pathname.startsWith('/api')) {
+    return NextResponse.next()
+  }
   
   // Check if the current path is an auth path (exact match to avoid matching dynamic routes)
   const isAuthPath = authPaths.some(path => pathname === path);
