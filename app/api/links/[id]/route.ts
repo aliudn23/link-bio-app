@@ -2,6 +2,10 @@ import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '../../../../api/utils/prisma';
 import { verifyToken } from '../../../../api/utils/jwt';
 
+// Configure route segment
+export const runtime = 'nodejs';
+export const dynamic = 'force-dynamic';
+
 // GET single link
 export async function GET(
   req: NextRequest,

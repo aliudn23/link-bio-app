@@ -177,6 +177,34 @@ export default function DashboardPage() {
     }
   }, [user]);
 
+  const fetchProfile = async () => {
+    try {
+      const token = localStorage.getItem('token');
+      const response = await fetch('/api/user/profile', {
+        headers: {
+          'Authorization': `Bearer ${token}`
+        },
+        credentials: 'include'
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        if (data.user) {
+          localStorage.setItem('user', JSON.stringify(data.user));
+          setProfile({
+            name: data.user.name || '',
+            bio: data.user.bio || '',
+            avatar: data.user.avatar || '',
+            darkMode: data.user.darkMode || false,
+            themeColor: data.user.themeColor || '#3B82F6'
+          });
+        }
+      }
+    } catch (error) {
+      console.error('Failed to fetch profile:', error);
+    }
+  };
+
   const fetchLinks = async () => {
     try {
       const token = localStorage.getItem('token');
@@ -390,11 +418,17 @@ export default function DashboardPage() {
         // Update user in localStorage so useAuth picks it up
         if (data.user) {
           localStorage.setItem('user', JSON.stringify(data.user));
+          // Update profile state with fresh data
+          setProfile({
+            name: data.user.name || '',
+            bio: data.user.bio || '',
+            avatar: data.user.avatar || '',
+            darkMode: data.user.darkMode || false,
+            themeColor: data.user.themeColor || '#3B82F6'
+          });
         }
         setSuccess('Profile updated successfully!');
         setShowEditProfile(false);
-        // Refresh the page to reflect changes
-        window.location.reload();
       } else {
         const data = await response.json();
         setError(data.error || 'Failed to update profile');

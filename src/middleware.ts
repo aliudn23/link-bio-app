@@ -16,8 +16,8 @@ export function middleware(request: NextRequest) {
   // Check if the current path is protected
   const isProtectedPath = protectedPaths.some(path => pathname.startsWith(path));
   
-  // Check if the current path is an auth path
-  const isAuthPath = authPaths.some(path => pathname.startsWith(path));
+  // Check if the current path is an auth path (exact match to avoid matching dynamic routes)
+  const isAuthPath = authPaths.some(path => pathname === path);
 
   // If it's an auth path and user has token, redirect to dashboard
   if (isAuthPath && token) {
@@ -42,10 +42,8 @@ export const config = {
      * - _next/static (static files)
      * - _next/image (image optimization files)
      * - favicon.ico (favicon file)
-     * Only match specific auth and dashboard paths, not public profiles
+     * - files with extensions (public files)
      */
-    '/dashboard/:path*',
-    '/login',
-    '/register',
+    '/((?!api|_next/static|_next/image|favicon.ico|.*\\..*).*)',
   ],
 };
