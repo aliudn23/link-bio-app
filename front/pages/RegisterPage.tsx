@@ -19,7 +19,7 @@ interface RegisterFormData {
 export default function RegisterPage() {
   const [error, setError] = useState<string>('');
   const [isLoading, setIsLoading] = useState(false);
-  const { register: registerUser, isAuthenticated } = useAuth();
+  const { register: registerUser } = useAuth();
   const router = useRouter();
   
   const {
@@ -28,12 +28,6 @@ export default function RegisterPage() {
     watch,
     formState: { errors }
   } = useForm<RegisterFormData>();
-
-  useEffect(() => {
-    if (!isLoading && isAuthenticated) {
-      router.push('/dashboard');
-    }
-  }, [isLoading, isAuthenticated, router]);
 
   const watchPassword = watch('password');
 

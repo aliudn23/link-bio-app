@@ -158,12 +158,6 @@ export default function DashboardPage() {
   );
 
   useEffect(() => {
-    if (!isLoading && !isAuthenticated) {
-      router.push('/login');
-    }
-  }, [isLoading, isAuthenticated, router]);
-
-  useEffect(() => {
     if (user) {
       setProfile({
         name: user.name || '',

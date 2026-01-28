@@ -3,19 +3,12 @@
 import Link from 'next/link';
 import { useAuth } from '../front/hooks/useAuth';
 import { useRouter } from 'next/navigation';
-import { useEffect } from 'react';
 import { Button } from '../front/components/Button';
 import { Card, CardContent } from '../front/components/Card';
 
 export default function Home() {
   const { isAuthenticated, isLoading } = useAuth();
   const router = useRouter();
-
-  useEffect(() => {
-    if (!isLoading && isAuthenticated) {
-      router.push('/dashboard');
-    }
-  }, [isLoading, isAuthenticated, router]);
 
   // Show loading spinner while checking auth or during redirect
   if (isLoading || isAuthenticated) {

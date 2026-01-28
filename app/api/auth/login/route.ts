@@ -63,9 +63,6 @@ export async function POST(req: NextRequest) {
       path: '/'
     });
 
-    console.log('Login - Cookie set for user:', email);
-    console.log('Login - Token length:', token.length);
-
     return response;
 
   } catch (error) {

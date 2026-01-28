@@ -17,7 +17,7 @@ interface LoginFormData {
 export default function LoginPage() {
   const [error, setError] = useState<string>('');
   const [isLoading, setIsLoading,] = useState(false);
-  const { login, isAuthenticated } = useAuth();
+  const { login } = useAuth();
   const router = useRouter();
   
   const {
@@ -25,12 +25,6 @@ export default function LoginPage() {
     handleSubmit,
     formState: { errors }
   } = useForm<LoginFormData>();
-
-  useEffect(() => {
-    if (!isLoading && isAuthenticated) {
-      router.push('/dashboard');
-    }
-  }, [isLoading, isAuthenticated, router]);
 
   const onSubmit = async (data: LoginFormData) => {
     setIsLoading(true);
