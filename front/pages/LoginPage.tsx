@@ -38,8 +38,8 @@ export default function LoginPage() {
 
     try {
       await login(data.email, data.password);
-      setIsLoading(false);
-      router.replace('/dashboard');
+      // Use window.location to force a full page reload so middleware can check the cookie
+      window.location.href = '/dashboard';
     } catch (err: any) {
       setError(err.message || 'Login failed');
       setIsLoading(false);

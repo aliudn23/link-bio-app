@@ -164,17 +164,17 @@ export default function DashboardPage() {
   }, [isLoading, isAuthenticated, router]);
 
   useEffect(() => {
-    // if (user) {
-    //   setProfile({
-    //     name: user.name || '',
-    //     bio: user.bio || '',
-    //     avatar: user.avatar || '',
-    //     darkMode: (user as any).darkMode || false,
-    //     themeColor: (user as any).themeColor || '#3B82F6'
-    //   });
-    //   fetchLinks();
-    //   fetchAnalytics();
-    // }
+    if (user) {
+      setProfile({
+        name: user.name || '',
+        bio: user.bio || '',
+        avatar: user.avatar || '',
+        darkMode: (user as any).darkMode || false,
+        themeColor: (user as any).themeColor || '#3B82F6'
+      });
+      fetchLinks();
+      fetchAnalytics();
+    }
   }, [user]);
 
   const fetchLinks = async () => {
