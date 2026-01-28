@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect, createContext, useContext, ReactNode } from 'react';
+import { useState, useEffect, createContext, useContext, ReactNode, useRef } from 'react';
 import { auth, User } from '../utils/auth';
 
 interface AuthContextType {
@@ -18,15 +18,19 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [mounted, setMounted] = useState(false);
-  const [skipAuthCheck, setSkipAuthCheck] = useState(false);
+  const authChecked = useRef(false);
 
   useEffect(() => {
     setMounted(true);
   }, []);
 
   const checkAuthStatus = async () => {
+    if (authChecked.current) return;
+    authChecked.current = true;
+    
     try {
-      if (auth.isAuthenticated()) {
+      const token = auth.getToken();
+      if (token) {
         const { user } = await auth.getProfile();
         setUser(user);
       } else {
@@ -42,37 +46,27 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   };
 
   useEffect(() => {
-    if (mounted && !skipAuthCheck) {
+    if (mounted) {
       checkAuthStatus();
-    } else if (mounted && skipAuthCheck) {
-      setIsLoading(false);
     }
-  }, [mounted, skipAuthCheck]);
+  }, [mounted]);
 
   const login = async (email: string, password: string) => {
-    setIsLoading(true);
     try {
       const response = await auth.login(email, password);
       auth.setToken(response.token);
       setUser(response.user);
-      setSkipAuthCheck(true);
-      setIsLoading(false);
     } catch (error) {
-      setIsLoading(false);
       throw error;
     }
   };
 
   const register = async (email: string, password: string, name: string) => {
-    setIsLoading(true);
     try {
       const response = await auth.register(email, password, name);
       auth.setToken(response.token);
       setUser(response.user);
-      setSkipAuthCheck(true);
-      setIsLoading(false);
     } catch (error) {
-      setIsLoading(false);
       throw error;
     }
   };
@@ -80,7 +74,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const logout = () => {
     auth.removeToken();
     setUser(null);
-    setSkipAuthCheck(false);
   };
 
   const value = {
