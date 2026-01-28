@@ -17,7 +17,8 @@ export default function Home() {
     }
   }, [isLoading, isAuthenticated, router]);
 
-  if (isLoading) {
+  // Show loading spinner while checking auth or during redirect
+  if (isLoading || isAuthenticated) {
     return (
       <div className="min-h-screen flex items-center justify-center">
         <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>

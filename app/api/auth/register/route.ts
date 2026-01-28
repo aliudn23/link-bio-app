@@ -49,11 +49,23 @@ export async function POST(req: NextRequest) {
     // Remove password from response
     const { password: _, ...userWithoutPassword } = user;
 
-    return NextResponse.json({
+    // Create response with token in cookie
+    const response = NextResponse.json({
       message: 'User registered successfully',
       user: userWithoutPassword,
       token
     }, { status: 201 });
+
+    // Set HTTP-only cookie for middleware authentication
+    response.cookies.set('token', token, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === 'production',
+      sameSite: 'lax',
+      maxAge: 60 * 60 * 24 * 7, // 7 days
+      path: '/'
+    });
+
+    return response;
 
   } catch (error) {
     console.error('Registration error:', error);

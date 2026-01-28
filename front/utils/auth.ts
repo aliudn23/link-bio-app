@@ -85,6 +85,20 @@ export const auth = {
     }
   },
 
+  async logout() {
+    try {
+      await fetch(`${API_BASE}/auth/logout`, {
+        method: 'POST',
+        credentials: 'include', // Important to send cookies
+      });
+    } catch (error) {
+      console.error('Logout error:', error);
+    } finally {
+      // Always remove token from localStorage
+      this.removeToken();
+    }
+  },
+
   isAuthenticated(): boolean {
     return !!this.getToken();
   }

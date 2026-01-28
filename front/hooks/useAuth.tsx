@@ -85,8 +85,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     }
   };
 
-  const logout = () => {
-    auth.removeToken();
+  const logout = async () => {
+    await auth.logout();
     setUser(null);
     localStorage.removeItem('user');
   };

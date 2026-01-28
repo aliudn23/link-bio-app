@@ -5,7 +5,7 @@ import type { NextRequest } from 'next/server';
 const protectedPaths = ['/dashboard'];
 
 // Paths that should redirect to dashboard if user is already authenticated
-const authPaths = ['/login', '/register'];
+const authPaths = ['/login', '/register', '/'];
 
 export function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
@@ -24,7 +24,14 @@ export function middleware(request: NextRequest) {
   }
 
   // If it's a protected path and no token, redirect to login
+  console.log('Middleware - Path:', pathname);
+  console.log('Middleware - Token from cookie:', request.cookies.get('token')?.value?.substring(0, 20) + '...');
+  console.log('Middleware - Token from header:', request.headers.get('authorization')?.substring(0, 30) + '...');
+  console.log('Middleware - Is protected path:', isProtectedPath);
+  console.log('Middleware - Has token:', !!token);
+  
   if (isProtectedPath && !token) {
+    console.log('Middleware - Redirecting to login');
     const loginUrl = new URL('/login', request.url);
     loginUrl.searchParams.set('callbackUrl', pathname);
     return NextResponse.redirect(loginUrl);
