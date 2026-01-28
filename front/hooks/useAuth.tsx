@@ -15,52 +15,51 @@ interface AuthContextType {
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export function AuthProvider({ children }: { children: ReactNode }) {
-  const [user, setUser] = useState<User | null>(() => {
-    // Initialize from localStorage if available
-    if (typeof window !== 'undefined') {
-      const savedUser = localStorage.getItem('user');
-      return savedUser ? JSON.parse(savedUser) : null;
-    }
-    return null;
-  });
+  const [user, setUser] = useState<User | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
     setMounted(true);
-  }, []);
-
-  const checkAuthStatus = async () => {
-    try {
-      const token = auth.getToken();
-      if (token) {
-        // If we already have user in state, don't fetch again
-        if (user) {
-          setIsLoading(false);
-          return;
+    
+    // Load user from localStorage after mount to avoid hydration mismatch
+    const checkAuth = async () => {
+      try {
+        const token = auth.getToken();
+        if (token) {
+          // Try to get cached user first
+          const savedUser = localStorage.getItem('user');
+          if (savedUser) {
+            try {
+              const cachedUser = JSON.parse(savedUser);
+              setUser(cachedUser);
+              setIsLoading(false);
+              return; // Use cached user, no need to fetch
+            } catch (e) {
+              localStorage.removeItem('user');
+            }
+          }
+          
+          // No cached user, fetch from API
+          const { user: fetchedUser } = await auth.getProfile();
+          setUser(fetchedUser);
+          localStorage.setItem('user', JSON.stringify(fetchedUser));
+        } else {
+          setUser(null);
+          localStorage.removeItem('user');
         }
-        const { user: fetchedUser } = await auth.getProfile();
-        setUser(fetchedUser);
-        localStorage.setItem('user', JSON.stringify(fetchedUser));
-      } else {
+      } catch (error) {
+        console.error('Auth check failed:', error);
+        auth.removeToken();
         setUser(null);
         localStorage.removeItem('user');
+      } finally {
+        setIsLoading(false);
       }
-    } catch (error) {
-      console.error('Auth check failed:', error);
-      auth.removeToken();
-      setUser(null);
-      localStorage.removeItem('user');
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
-  useEffect(() => {
-    if (mounted) {
-      checkAuthStatus();
-    }
-  }, [mounted]);
+    };
+    
+    checkAuth();
+  }, []);
 
   const login = async (email: string, password: string) => {
     try {
