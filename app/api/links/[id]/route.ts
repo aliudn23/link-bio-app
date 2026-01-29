@@ -23,16 +23,12 @@ export async function GET(
   { params }: { params: Promise<{ id: string }> }
 ) {
 
-  console.log('GET /api/links/[id] called');
-
   try {
     const { id } = await params;
     
     const link = await prisma.link.findUnique({
       where: { id }
     });
-
-    console.log('Fetched link:', link);
 
     if (!link) {
       return NextResponse.json(
