@@ -55,6 +55,8 @@ export async function PATCH(
     const { id } = await params;
     const token = req.cookies.get('token')?.value || 
                   req.headers.get('authorization')?.replace('Bearer ', '');
+                  
+    console.log('Token:', token);
 
     if (!token) {
       return NextResponse.json(

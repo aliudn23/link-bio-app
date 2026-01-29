@@ -8,6 +8,10 @@ const protectedPaths = ['/dashboard'];
 const authPaths = ['/login', '/register'];
 
 export function middleware(request: NextRequest) {
+  if (request.nextUrl.pathname.startsWith('/api')) {
+    return NextResponse.next();
+  }
+
   const { pathname } = request.nextUrl;
   
   const token = request.cookies.get('token')?.value || 
@@ -15,10 +19,6 @@ export function middleware(request: NextRequest) {
 
   // Check if the current path is protected
   const isProtectedPath = protectedPaths.some(path => pathname.startsWith(path));
-
-  if (!pathname.startsWith('/api')) {
-    return NextResponse.next()
-  }
   
   // Check if the current path is an auth path (exact match to avoid matching dynamic routes)
   const isAuthPath = authPaths.some(path => pathname === path);
