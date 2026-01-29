@@ -49,14 +49,12 @@ export async function GET(
 // PATCH update a link
 export async function PATCH(
   req: NextRequest,
-  { params }: { params: Promise<{ id: string }> }
+  { params }: { params: { id: string } }
 ) {
   try {
-    const { id } = await params;
+    const { id } = params;
     const token = req.cookies.get('token')?.value || 
                   req.headers.get('authorization')?.replace('Bearer ', '');
-                  
-    console.log('Token:', token);
 
     if (!token) {
       return NextResponse.json(
@@ -118,10 +116,10 @@ export async function PATCH(
 // DELETE a link
 export async function DELETE(
   req: NextRequest,
-  { params }: { params: Promise<{ id: string }> }
+  { params }: { params: { id: string } }
 ) {
   try {
-    const { id } = await params;
+    const { id } = params;
     const token = req.cookies.get('token')?.value || 
                   req.headers.get('authorization')?.replace('Bearer ', '');
 
