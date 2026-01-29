@@ -4,10 +4,10 @@ import { prisma } from '../../../../../api/utils/prisma';
 // POST track link click
 export async function POST(
   req: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
-    const { id } = params;
+    const { id } = await params;
     const userAgent = req.headers.get('user-agent') || undefined;
     const referer = req.headers.get('referer') || undefined;
 

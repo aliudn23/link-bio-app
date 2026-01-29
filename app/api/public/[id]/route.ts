@@ -4,10 +4,10 @@ import { prisma } from '../../../../api/utils/prisma';
 // GET public profile by user ID
 export async function GET(
   req: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
-    const { id } = params;
+    const { id } = await params;
     
     const user = await prisma.user.findUnique({
       where: { id },
