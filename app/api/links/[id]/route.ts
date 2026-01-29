@@ -5,6 +5,7 @@ import { verifyToken } from '../../../../api/utils/jwt';
 // Configure route segment
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
+export const dynamicParams = true;
 
 export async function OPTIONS() {
   return NextResponse.json({}, { status: 200, 

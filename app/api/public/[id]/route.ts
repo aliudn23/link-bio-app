@@ -1,6 +1,10 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '../../../../api/utils/prisma';
 
+// Configure route segment
+export const dynamic = 'force-dynamic';
+export const dynamicParams = true;
+
 // GET public profile by user ID
 export async function GET(
   req: NextRequest,
