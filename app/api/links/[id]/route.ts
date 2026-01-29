@@ -10,7 +10,7 @@ export async function OPTIONS() {
   return NextResponse.json({}, { status: 200, 
     headers: {
       'Access-Control-Allow-Origin': '*',
-      'Access-Control-Allow-Methods': 'GET,POST,PATCH,DELETE,OPTIONS',
+      'Access-Control-Allow-Methods': 'GET,POST,OPTIONS',
       'Access-Control-Allow-Headers': 'Content-Type, Authorization',
     },
    });
@@ -46,75 +46,8 @@ export async function GET(
   }
 }
 
-// PATCH update a link
-export async function PATCH(
-  req: NextRequest,
-  context: { params: { id: string } }
-) {
-  try {
-    const { id } = context.params;
-    const token = req.cookies.get('token')?.value || 
-                  req.headers.get('authorization')?.replace('Bearer ', '');
-
-    if (!token) {
-      return NextResponse.json(
-        { error: 'Unauthorized' },
-        { status: 401 }
-      );
-    }
-
-    const decoded = verifyToken(token) as any;
-    if (!decoded) {
-      return NextResponse.json(
-        { error: 'Invalid token' },
-        { status: 401 }
-      );
-    }
-
-    const body = await req.json();
-    const { title, url, active, order } = body;
-
-    // Verify the link belongs to the user
-    const existingLink = await prisma.link.findUnique({
-      where: { id }
-    });
-
-    if (!existingLink) {
-      return NextResponse.json(
-        { error: 'Link not found' },
-        { status: 404 }
-      );
-    }
-
-    if (existingLink.userId !== decoded.id) {
-      return NextResponse.json(
-        { error: 'Forbidden' },
-        { status: 403 }
-      );
-    }
-
-    const link = await prisma.link.update({
-      where: { id },
-      data: {
-        ...(title !== undefined && { title }),
-        ...(url !== undefined && { url }),
-        ...(active !== undefined && { active }),
-        ...(order !== undefined && { order })
-      }
-    });
-
-    return NextResponse.json({ link });
-  } catch (error) {
-    console.error('Update link error:', error);
-    return NextResponse.json(
-      { error: 'Failed to update link' },
-      { status: 500 }
-    );
-  }
-}
-
-// DELETE a link
-export async function DELETE(
+// POST update or delete a link (use action parameter to differentiate)
+export async function POST(
   req: NextRequest,
   { params }: { params: Promise<{ id: string }> }
 ) {
@@ -138,6 +71,9 @@ export async function DELETE(
       );
     }
 
+    const body = await req.json();
+    const { action, title, url, active, order } = body;
+
     // Verify the link belongs to the user
     const existingLink = await prisma.link.findUnique({
       where: { id }
@@ -157,15 +93,31 @@ export async function DELETE(
       );
     }
 
-    await prisma.link.delete({
-      where: { id }
+    // Handle delete action
+    if (action === 'delete') {
+      await prisma.link.delete({
+        where: { id }
+      });
+
+      return NextResponse.json({ message: 'Link deleted successfully' });
+    }
+
+    // Handle update action (default)
+    const link = await prisma.link.update({
+      where: { id },
+      data: {
+        ...(title !== undefined && { title }),
+        ...(url !== undefined && { url }),
+        ...(active !== undefined && { active }),
+        ...(order !== undefined && { order })
+      }
     });
 
-    return NextResponse.json({ message: 'Link deleted successfully' });
+    return NextResponse.json({ link });
   } catch (error) {
-    console.error('Delete link error:', error);
+    console.error('Link operation error:', error);
     return NextResponse.json(
-      { error: 'Failed to delete link' },
+      { error: 'Failed to process link operation' },
       { status: 500 }
     );
   }
