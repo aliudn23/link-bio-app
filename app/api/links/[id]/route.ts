@@ -49,10 +49,10 @@ export async function GET(
 // PATCH update a link
 export async function PATCH(
   req: NextRequest,
-  { params }: { params: { id: string } }
+  context: { params: { id: string } }
 ) {
   try {
-    const { id } = params;
+    const { id } = context.params;
     const token = req.cookies.get('token')?.value || 
                   req.headers.get('authorization')?.replace('Bearer ', '');
 
@@ -116,10 +116,10 @@ export async function PATCH(
 // DELETE a link
 export async function DELETE(
   req: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
-    const { id } = params;
+    const { id } = await params;
     const token = req.cookies.get('token')?.value || 
                   req.headers.get('authorization')?.replace('Bearer ', '');
 
